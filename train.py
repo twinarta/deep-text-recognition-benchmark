@@ -68,7 +68,10 @@ def train(opt):
     model.train()
     if opt.continue_model != '':
         print(f'loading pretrained model from {opt.continue_model}')
-        model.load_state_dict(torch.load(opt.continue_model))
+        if torch.cuda.is_available():
+            model.load_state_dict(torch.load(opt.continue_model))        
+        else:
+            model.load_state_dict(torch.load(opt.continue_model, map_location='cpu'))
     print("Model:")
     print(model)
 
@@ -111,7 +114,8 @@ def train(opt):
     """ start training """
     start_iter = 0
     if opt.continue_model != '':
-        start_iter = int(opt.continue_model.split('_')[-1].split('.')[0])
+        # start_iter = int(opt.continue_model.split('_')[-1].split('.')[0])
+        start_iter = 1 # Edited by Tommy
         print(f'continue to train, start_iter: {start_iter}')
 
     start_time = time.time()
